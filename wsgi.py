@@ -5,7 +5,7 @@ from main import main
 
 from flask import Flask
 from flask import request, g
-
+import asyncio
 
 # Need to Wrap  the app to set the loop and to inject request in the function
 def main_wrapper():
@@ -15,7 +15,7 @@ def main_wrapper():
         return res
     except Exception as e:
         print(e)
-    return None
+        return f"Error {e}"
 
 
 local_app = Flask(__name__)
@@ -34,6 +34,7 @@ def teardown_request(exception):
 if __name__ == "__main__":
     # Use simple WSGI server (single threaded to avoid signal issue)
     from wsgiref.simple_server import make_server
+
 
     port = int(os.environ.get("HEADLESS_CHROME_PORT", 8009))
     web = make_server("", port, local_app)

@@ -13,7 +13,7 @@ def hammer_it():
 
 pool = ThreadPool(8)
 
-for _ in range(1, 100):
+for _ in range(1, 10):
     pool.apply(hammer_it)
 
 

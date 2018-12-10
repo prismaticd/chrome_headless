@@ -128,7 +128,12 @@ def main(request):
 
         print(f"Rendering {url}")
         pdf_path = f"{g.folder_path}/res.pdf"
-        asyncio.get_event_loop().run_until_complete(html_to_pdf(url, pdf_path, pdf_options))
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+            loop = asyncio.get_event_loop()
+        loop.run_until_complete(html_to_pdf(url, pdf_path, pdf_options))
 
         return send_file(pdf_path, attachment_filename="file.pdf")
 
