@@ -20,4 +20,5 @@ RUN pip3 install -r requirements.txt && rm -rf /root/.cache/
 
 COPY ./ /files/
 
-
+# trigger download of chrome
+RUN python main.py
