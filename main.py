@@ -46,10 +46,13 @@ async def get_blank_page():
     global BROWSER
     try:
         if not BROWSER or not BROWSER._connection._connected:
+            if BROWSER:
+                await BROWSER.close()
             BROWSER = await launch(args=["--no-sandbox"])
         page = await BROWSER.newPage()
     except NetworkError as e:
         print(e)
+        await BROWSER.close()
         BROWSER = await launch(args=["--no-sandbox"])
         page = await BROWSER.newPage()
 
@@ -68,7 +71,9 @@ async def html_to_pdf(url, out_path, options=None):
         options=options,
     )
     await page.close()
-    await BROWSER.close()
+    # to avoid instanciate browser for long process
+    if os.environ.get("CHROMEHEADLESS_CLOSE_AFTER_REQUEST"):
+        await BROWSER.close()
     print(f"Generated PDF in {datetime.now() - start} from {url}")
     return
 
