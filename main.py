@@ -4,7 +4,7 @@ import shutil
 import string
 import random
 from flask import g
-
+from pyppeteer.errors import NetworkError
 
 os.environ["PYPPETEER_HOME"] = os.path.join(os.path.dirname(__file__), "/tmp/PYPPETEER_HOME")
 
@@ -44,9 +44,19 @@ BROWSER = None
 
 async def get_blank_page():
     global BROWSER
-    if not BROWSER:
+    try:
+        if not BROWSER or not BROWSER._connection._connected:
+            if BROWSER:
+                await BROWSER.close()
+            BROWSER = await launch(args=["--no-sandbox"])
+        page = await BROWSER.newPage()
+    except NetworkError as e:
+        print(e)
+        await BROWSER.close()
         BROWSER = await launch(args=["--no-sandbox"])
-    return await BROWSER.newPage()
+        page = await BROWSER.newPage()
+
+    return page
 
 
 async def html_to_pdf(url, out_path, options=None):
@@ -61,6 +71,9 @@ async def html_to_pdf(url, out_path, options=None):
         options=options,
     )
     await page.close()
+    # shutdown browser at end of request to save memory at expense of startup time
+    if os.environ.get("CHROMEHEADLESS_CLOSE_AFTER_REQUEST"):
+        await BROWSER.close()
     print(f"Generated PDF in {datetime.now() - start} from {url}")
     return
 
