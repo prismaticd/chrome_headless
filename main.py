@@ -71,7 +71,7 @@ async def html_to_pdf(url, out_path, options=None):
         options=options,
     )
     await page.close()
-    # to avoid instanciate browser for long process
+    # shutdown browser at end of request to save memory at expense of startup time
     if os.environ.get("CHROMEHEADLESS_CLOSE_AFTER_REQUEST"):
         await BROWSER.close()
     print(f"Generated PDF in {datetime.now() - start} from {url}")
