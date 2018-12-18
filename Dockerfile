@@ -6,6 +6,7 @@ WORKDIR /files/
 
 # install third party dependencies of chromium browser but we don't need chromium itself
 RUN apt-get update \
+  && yes yes | apt-get install -y ttf-mscorefonts-installer \
   && apt-get install -y python3-pip python3-dev \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
