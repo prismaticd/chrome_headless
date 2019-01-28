@@ -27,7 +27,7 @@ local_app.add_url_rule("/", "main", view_func=main_wrapper, methods=("GET", "POS
 def teardown_request(exception):
     folder_path = g.get("folder_path", None)
     if folder_path:
-        print(f"Cleaning {folder_path}")
+        #print(f"Cleaning {folder_path}")
         shutil.rmtree(folder_path, ignore_errors=True)
 
 

@@ -15,7 +15,10 @@ RUN apt-get update \
   && apt-get remove -y chromium-browser \
   && rm -rf /var/lib/apt/lists/* && rm -rf /root/.cache/
 
-ENTRYPOINT ["/usr/local/bin/gunicorn", "--bind=0.0.0.0:8009", "wsgi:local_app"]
+ENTRYPOINT ["/usr/local/bin/gunicorn", "--bind=0.0.0.0:8009", \
+              "wsgi:local_app", "--max-requests=300", \
+              "--max-requests=500", "--max-requests-jitter=100", \
+              "--workers=1", "--thread=1", "--timeout=10"]
 
 COPY ./requirements.txt /files/requirements.txt
 

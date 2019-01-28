@@ -44,6 +44,10 @@ from werkzeug.utils import secure_filename
 BROWSER = None
 
 
+def print_it(text):
+    #print(text)
+    pass
+
 async def get_blank_page():
     global BROWSER
     try:
@@ -53,7 +57,7 @@ async def get_blank_page():
             BROWSER = await launch(args=["--no-sandbox"])
         page = await BROWSER.newPage()
     except NetworkError as e:
-        print(e)
+        print_it(e)
         await BROWSER.close()
         BROWSER = await launch(args=["--no-sandbox"])
         page = await BROWSER.newPage()
@@ -63,7 +67,7 @@ async def get_blank_page():
 
 async def html_to_pdf(url, out_path, options=None):
     start = datetime.now()
-    print("Starting HTML to pdf")
+    print_it("Starting HTML to pdf")
     page = await get_blank_page()
     await page.goto(url)
 
@@ -76,7 +80,7 @@ async def html_to_pdf(url, out_path, options=None):
     # shutdown browser at end of request to save memory at expense of startup time
     if os.environ.get("CHROMEHEADLESS_CLOSE_AFTER_REQUEST"):
         await BROWSER.close()
-    print(f"Generated PDF in {datetime.now() - start} from {url}")
+    print_it(f"Generated PDF in {datetime.now() - start} from {url}")
     return
 
 
@@ -118,7 +122,7 @@ def main(request):
 
     if request.method == "POST":
         if "file" not in request.files:
-            print(request.files)
+            print_it(request.files)
             return "ERROR: No file part"
         file = request.files["file"]
         if file.filename == "":
@@ -139,9 +143,9 @@ def main(request):
                 myzip.extractall(g.folder_path)
 
             url = f"file://{g.folder_path}/{entrypoint}"
-            print(url)
+            print_it(url)
 
-        print(f"Rendering {url}")
+        print_it(f"Rendering {url}")
         pdf_path = f"{g.folder_path}/res.pdf"
         try:
             loop = asyncio.get_event_loop()
