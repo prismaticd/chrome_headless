@@ -11,11 +11,11 @@ import asyncio
 def main_wrapper():
     #asyncio.set_event_loop(asyncio.new_event_loop())
     try:
-        res = main(request)
-        return res
+        res, http_status = main(request)
+        return res, http_status
     except Exception as e:
         print(e)
-        return f"Error {e}"
+        return f"Error {e}", 400
 
 
 local_app = Flask(__name__)

@@ -116,17 +116,17 @@ def main(request):
             </form>
         </body>
         </html>
-        """
+        """, 200
 
     pdf_options = {}
 
     if request.method == "POST":
         if "file" not in request.files:
             print_it(request.files)
-            return "ERROR: No file part"
+            return "ERROR: No file part", 400
         file = request.files["file"]
         if file.filename == "":
-            return "ERROR: No selected file"
+            return "ERROR: No selected file", 400
         if file:
             pdf_options = json.loads(request.form.get("options_json", "{}"))
             entrypoint = request.form.get("entrypoint", "index.html")
@@ -154,8 +154,8 @@ def main(request):
             loop = asyncio.get_event_loop()
         loop.run_until_complete(html_to_pdf(url, pdf_path, pdf_options))
 
-        return send_file(pdf_path, attachment_filename="file.pdf")
+        return send_file(pdf_path, attachment_filename="file.pdf"), 200
 
-    return "Error"
+    return "Error", 400
 
 
