@@ -1,5 +1,4 @@
 flask
 pyppeteer
 gunicorn
-# https://github.com/tqdm/tqdm/issues/613
-tqdm<=4.24.0
+tqdm>=4.31.1
