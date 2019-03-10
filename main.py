@@ -1,25 +1,33 @@
 #!/usr/bin/env python
 
 import os
-from pathlib import Path
-import shutil
-import string
 import random
+import string
+
+import shutil
 from flask import g
+from pathlib import Path
 from pyppeteer.errors import NetworkError
 
-os.environ["PYPPETEER_HOME"] = os.path.join(os.path.dirname(__file__), "/tmp/PYPPETEER_HOME")
+os.environ["PYPPETEER_HOME"] = os.path.join(
+    os.path.dirname(__file__), "/tmp/PYPPETEER_HOME"
+)
 
 # local_chromium = Path(os.path.dirname(__file__)) / "local-chromium"
 # # local_chromium.mkdir(exist_ok=True)
 #
-p = Path(os.environ['PYPPETEER_HOME'])
+p = Path(os.environ["PYPPETEER_HOME"])
 p.mkdir(exist_ok=True)
 #
 # l = p / "local-chromium"
 # l.symlink_to(local_chromium)
 
-from pyppeteer.chromium_downloader import download_chromium, check_chromium, DOWNLOADS_FOLDER, REVISION
+from pyppeteer.chromium_downloader import (
+    download_chromium,
+    check_chromium,
+    DOWNLOADS_FOLDER,
+    REVISION,
+)
 
 if not check_chromium():
     download_chromium()
@@ -45,8 +53,9 @@ BROWSER = None
 
 
 def print_it(text):
-    #print(text)
+    # print(text)
     pass
+
 
 async def get_blank_page():
     global BROWSER
@@ -88,7 +97,8 @@ def main(request):
     # request_json = request.get_json()
     url = request.args.get("url")
     if not url and request.method == "GET":
-        return """
+        return (
+            """
         <html>
         <body>
             <p>
@@ -116,7 +126,9 @@ def main(request):
             </form>
         </body>
         </html>
-        """, 200
+        """,
+            200,
+        )
 
     pdf_options = {}
 
@@ -132,7 +144,9 @@ def main(request):
             entrypoint = request.form.get("entrypoint", "index.html")
 
             filename = secure_filename(file.filename)
-            folder_name = "".join(random.choice(string.ascii_letters) for _ in range(10))
+            folder_name = "".join(
+                random.choice(string.ascii_letters) for _ in range(10)
+            )
             g.folder_path = f"/tmp/htmltopdf/{folder_name}"
             os.makedirs(g.folder_path, exist_ok=True)
 
@@ -157,5 +171,3 @@ def main(request):
         return send_file(pdf_path, attachment_filename="file.pdf"), 200
 
     return "Error", 400
-
-
