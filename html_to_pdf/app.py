@@ -1,14 +1,17 @@
 import json
+import logging
 import os
 import random
 import string
 from zipfile import ZipFile
 
+from datetime import datetime
 from flask import g, send_file
 from werkzeug.utils import secure_filename
 
-from .renderers import chrome_headless
-from .utils import print_it
+from .renderers import chrome_headless, weasyprint
+
+logger = logging.getLogger(__name__)
 
 
 def main(request):
@@ -33,6 +36,12 @@ def main(request):
                         <label for="entrypoint">file to render within zip file</label>
                     </li>
                     <li>
+                        <input type="radio" name="renderer" id="renderer_chrome" value="chrome" checked>
+                        <label for="renderer_chrome">Chrome Headless</label>
+                        <input type="radio" name="renderer" id="renderer_weasyprint" value="weasyprint">
+                        <label for="renderer_weasyprint">Weasyprint</label>
+                    </li>
+                    <li>
                         <input type="textarea" name="options_json" value="{}">
                         <label for="options_json">options_json, as per 
                         <a href="https://miyakogi.github.io/pyppeteer/reference.html#pyppeteer.page.Page.pdf" target="_blank">pyppeteer PDF options</a></label>
@@ -51,8 +60,9 @@ def main(request):
     pdf_options = {}
 
     if request.method == "POST":
+        renderer = request.form.get("renderer", "chrome")
+
         if "file" not in request.files:
-            print_it(request.files)
             return "ERROR: No file part", 400
         file = request.files["file"]
         if file.filename == "":
@@ -75,13 +85,20 @@ def main(request):
                 myzip.extractall(g.folder_path)
 
             url = f"file://{g.folder_path}/{entrypoint}"
-            print_it(url)
 
-        print_it(f"Rendering {url}")
+        logger.info(f"Rendering {url} using {renderer}")
         pdf_path = f"{g.folder_path}/res.pdf"
 
-        if True:
+        start = datetime.now()
+
+        if renderer == "chrome":
             chrome_headless.html_to_pdf_sync(url, pdf_path, pdf_options)
+        elif renderer == "weasyprint":
+            weasyprint.html_to_pdf_sync(url, pdf_path, pdf_options)
+        else:
+            return "ERROR: invalid rendererer selected", 400
+
+        logger.warning(f"Rendered in {datetime.now() - start} using {renderer}")
 
         return send_file(pdf_path, attachment_filename="file.pdf"), 200
 

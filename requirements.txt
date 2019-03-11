@@ -1,4 +1,7 @@
 flask
+# for chrome_headless renderer
 pyppeteer
+# for Weasyprint renderer
+Weasyprint
 gunicorn
 tqdm>=4.31.1

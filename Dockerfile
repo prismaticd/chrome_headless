@@ -7,7 +7,10 @@ WORKDIR /files/
 # install third party dependencies of chromium browser but we don't need chromium itself
 RUN apt-get update \
   && yes yes | apt-get install -y ttf-mscorefonts-installer \
-  && apt-get install -y python3-pip python3-dev \
+  && apt-get install -y \
+     build-essential python3-dev python3-pip python3-setuptools python3-wheel \
+     fonts-font-awesome \
+     python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
   && pip3 install --upgrade pip \
