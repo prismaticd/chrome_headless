@@ -4,7 +4,7 @@ import shutil
 from flask import Flask
 from flask import request, g
 
-from main import main
+from html_to_pdf.app import main
 
 
 # This is only for local test, Google cloud functions are not calling this part
