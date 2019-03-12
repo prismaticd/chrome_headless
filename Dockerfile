@@ -21,7 +21,7 @@ RUN apt-get update \
 ENTRYPOINT ["/usr/local/bin/gunicorn", "--bind=0.0.0.0:8009", \
               "wsgi:local_app", "--max-requests=300", \
               "--max-requests=500", "--max-requests-jitter=100", \
-              "--workers=1", "--thread=1", "--timeout=10"]
+              "--workers=1", "--thread=1", "--timeout=30"]
 
 COPY ./requirements.txt /files/requirements.txt
 
