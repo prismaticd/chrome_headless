@@ -15,8 +15,8 @@ RUN apt-get update \
      libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
      libtiff5-dev libjpeg8-dev zlib1g-dev  libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev \
      libfribidi-dev  tcl8.6-dev tk8.6-dev python-tk \
-  && cd /opt/ && wget https://bitbucket.org/pypy/pypy/downloads/pypy3.5-v7.0.0-linux64.tar.bz2 \
-  && tar xjf pypy3.5-v7.0.0-linux64.tar.bz2 && rm pypy3.5-v7.0.0-linux64.tar.bz2 \
+  && cd /opt/ && wget https://bitbucket.org/pypy/pypy/downloads/pypy3.6-v7.0.0-linux64.tar.bz2 \
+  && tar xjf pypy3.6-v7.0.0-linux64.tar.bz2 && rm pypy3.6-v7.0.0-linux64.tar.bz2 \
   && rm -rf /var/lib/apt/lists/* && rm -rf /root/.cache/
 
 ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:8009", \
@@ -24,7 +24,7 @@ ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:8009", \
               "--max-requests=500", "--max-requests-jitter=100", \
               "--workers=1", "--thread=1", "--timeout=30"]
 
-ENV PATH=/opt/pypy3.5-v7.0.0-linux64/bin/:${PATH}
+ENV PATH=/opt/pypy3.6-v7.0.0-linux64/bin/:${PATH}
 
 RUN pypy3 -m ensurepip && pip3 install --upgrade pip wheel setuptools
 
