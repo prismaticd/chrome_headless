@@ -36,9 +36,7 @@ def main(request):
                         <label for="entrypoint">file to render within zip file</label>
                     </li>
                     <li>
-                        <input type="radio" name="renderer" id="renderer_chrome" value="chrome" checked>
-                        <label for="renderer_chrome">Chrome Headless</label>
-                        <input type="radio" name="renderer" id="renderer_weasyprint" value="weasyprint">
+                        <input type="radio" name="renderer" id="renderer_weasyprint" value="weasyprint" checked>
                         <label for="renderer_weasyprint">Weasyprint</label>
                     </li>
                     <li>
@@ -60,7 +58,7 @@ def main(request):
     pdf_options = {}
 
     if request.method == "POST":
-        renderer = request.form.get("renderer", "chrome")
+        renderer = request.form.get("renderer", "weasyprint")
 
         if "file" not in request.files:
             return "ERROR: No file part", 400
@@ -91,9 +89,7 @@ def main(request):
 
         start = datetime.now()
 
-        if renderer == "chrome":
-            raise NotImplementedError()
-        elif renderer == "weasyprint":
+        if renderer == "weasyprint":
             weasyprint.html_to_pdf_sync(url, pdf_path, pdf_options)
         else:
             return "ERROR: invalid rendererer selected", 400
