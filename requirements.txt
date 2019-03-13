@@ -1,6 +1,4 @@
 flask
-# for chrome_headless renderer
-pyppeteer
 # for Weasyprint renderer
 Weasyprint
 gunicorn

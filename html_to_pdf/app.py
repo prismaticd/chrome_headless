@@ -9,7 +9,7 @@ from datetime import datetime
 from flask import g, send_file
 from werkzeug.utils import secure_filename
 
-from .renderers import chrome_headless, weasyprint
+from .renderers import weasyprint
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +75,7 @@ def main(request):
             folder_name = "".join(
                 random.choice(string.ascii_letters) for _ in range(10)
             )
-            g.folder_path = f"/tmp/htmltopdf/{folder_name}"
+            g.folder_path = "/tmp/htmltopdf/{}".format(folder_name)
             os.makedirs(g.folder_path, exist_ok=True)
 
             zip_location = os.path.join(g.folder_path, filename)
@@ -84,21 +84,21 @@ def main(request):
             with ZipFile(zip_location, "r") as myzip:
                 myzip.extractall(g.folder_path)
 
-            url = f"file://{g.folder_path}/{entrypoint}"
+            url = "file://{}/{}".format(g.folder_path, entrypoint)
 
-        logger.info(f"Rendering {url} using {renderer}")
-        pdf_path = f"{g.folder_path}/res.pdf"
+        logger.info("Rendering {} using {}".format(url, renderer))
+        pdf_path = "{}/res.pdf".format(g.folder_path)
 
         start = datetime.now()
 
         if renderer == "chrome":
-            chrome_headless.html_to_pdf_sync(url, pdf_path, pdf_options)
+            raise NotImplementedError()
         elif renderer == "weasyprint":
             weasyprint.html_to_pdf_sync(url, pdf_path, pdf_options)
         else:
             return "ERROR: invalid rendererer selected", 400
 
-        logger.warning(f"Rendered in {datetime.now() - start} using {renderer}")
+        logger.warning("Rendered in {} using {}".format(datetime.now() - start, renderer))
 
         return send_file(pdf_path, attachment_filename="file.pdf"), 200
 
