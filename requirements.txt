@@ -2,6 +2,6 @@ flask
 # for chrome_headless renderer
 pyppeteer
 # for Weasyprint renderer
-Weasyprint
+Weasyprint>=46
 gunicorn
 tqdm>=4.31.1
