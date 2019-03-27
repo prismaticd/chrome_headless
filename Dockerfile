@@ -10,10 +10,10 @@ RUN apt-get update \
   && apt-get install -y \
      build-essential python3-dev python3-pip python3-setuptools python3-wheel \
      fonts-font-awesome \
-     python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
+     libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
-  && pip3 install --upgrade pip \
+  && pip3 install --upgrade pip setuptools \
   && apt-get install -y chromium-browser \
   && apt-get remove -y chromium-browser \
   && rm -rf /var/lib/apt/lists/* && rm -rf /root/.cache/
