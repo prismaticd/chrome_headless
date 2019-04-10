@@ -4,7 +4,7 @@ import shutil
 from flask import Flask
 from flask import request, g
 
-from main import main
+from html_to_pdf.app import main
 
 
 # This is only for local test, Google cloud functions are not calling this part
@@ -22,7 +22,6 @@ def main_wrapper():
 
 local_app = Flask(__name__)
 local_app.add_url_rule("/", "main", view_func=main_wrapper, methods=("GET", "POST"))
-# app.run(debug=False, use_reloader=False)
 
 
 @local_app.teardown_request
